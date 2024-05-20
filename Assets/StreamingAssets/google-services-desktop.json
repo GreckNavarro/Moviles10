@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "817750419167",
+    "project_id": "laboratorio10-49b6b",
+    "storage_bucket": "laboratorio10-49b6b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817750419167:android:f9afa14bbbb428bf29eb6a",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.Lb10Moviles"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9LnMDpKlg3-fOkNqdoP2655gGHy6TqQE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
