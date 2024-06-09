@@ -22,16 +22,16 @@ public class Authentication : MonoBehaviour
         _authReference = FirebaseAuth.GetAuth(FirebaseApp.DefaultInstance);
     }
 
-    public void SignUp()
+    public async void SignUp()
     {
-        Debug.Log("Start Register");
-        StartCoroutine(RegisterUser(user.Email, user.Password));
+        //Debug.Log("Start Register");
+        //StartCoroutine(RegisterUser(user.Email, user.Password));
+        await RegisterUserAsync(user.Email, user.Password);
     }
 
-    public void SignIn()
+    public async void SignIn()
     {
-        Debug.Log("Start Login");
-        StartCoroutine(SignInWithEmail(user.Email, user.Password));
+        await SigInWithEmailAsync(user.Email, user.Password);
     }
 
     public void SignOut()
@@ -44,38 +44,72 @@ public class Authentication : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene2");
     }
 
-    private IEnumerator RegisterUser(string email, string password)
-    {
-        Debug.Log("Registering");
-        var registerTask = _authReference.CreateUserWithEmailAndPasswordAsync(email, password);
-        yield return new WaitUntil(() => registerTask.IsCompleted);
+    //private IEnumerator RegisterUser(string email, string password)
+    //{
+    //    Debug.Log("Registering");
+    //    var registerTask = _authReference.CreateUserWithEmailAndPasswordAsync(email, password);
+    //    yield return new WaitUntil(() => registerTask.IsCompleted);
 
-        if (registerTask.Exception != null)
+    //    if (registerTask.Exception != null)
+    //    {
+    //        Debug.LogWarning($"Failed to register task with {registerTask.Exception}");
+    //    }
+    //    else
+    //    {
+    //        Debug.Log($"Succesfully registered user {registerTask.Result.User.Email}");
+    //        ValidateRegister?.Invoke();
+    //    }
+    //}
+
+    private async Task RegisterUserAsync(string email, string password)
+    {
+        Debug.Log("Usando Async");
+        Debug.Log("Registering");
+
+        var registerTask = _authReference.CreateUserWithEmailAndPasswordAsync(email, password);
+
+        await registerTask;
+
+        if (registerTask.IsFaulted)
         {
-            Debug.LogWarning($"Failed to register task with {registerTask.Exception}");
+            Debug.LogWarning($"Failed to register user: {registerTask.Exception?.Message}");
         }
-        else
+        else if (registerTask.IsCompleted)
         {
-            Debug.Log($"Succesfully registered user {registerTask.Result.User.Email}");
+            Debug.Log($"Successfully registered user {registerTask.Result.User.Email}");
             ValidateRegister?.Invoke();
         }
     }
 
-    private IEnumerator SignInWithEmail(string email, string password)
+    //private IEnumerator SignInWithEmail(string email, string password)
+    //{
+    //    Debug.Log("Loggin In");
+
+    //    var loginTask = _authReference.SignInWithEmailAndPasswordAsync(email, password);
+    //    yield return new WaitUntil(() => loginTask.IsCompleted);
+
+    //    if (loginTask.Exception != null)
+    //    {
+    //        Debug.LogWarning($"Login failed with {loginTask.Exception}");
+    //    }
+    //    else
+    //    {
+    //        Debug.Log($"Login succeeded with {loginTask.Result.User.Email}");
+    //        OnLogInSuccesful?.Invoke();
+    //    }
+    //}
+    private async Task SigInWithEmailAsync(string email, string password)
     {
         Debug.Log("Loggin In");
-
-        var loginTask = _authReference.SignInWithEmailAndPasswordAsync(email, password);
-        yield return new WaitUntil(() => loginTask.IsCompleted);
-
-        if (loginTask.Exception != null)
+        try
         {
-            Debug.LogWarning($"Login failed with {loginTask.Exception}");
-        }
-        else
-        {
-            Debug.Log($"Login succeeded with {loginTask.Result.User.Email}");
+            var loginTask = await _authReference.SignInWithEmailAndPasswordAsync(email, password);
+            Debug.Log($"Login succeeded with {loginTask.User.Email}");
             OnLogInSuccesful?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"Login failed: {ex.Message}");
         }
     }
 
